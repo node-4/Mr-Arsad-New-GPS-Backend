@@ -16,7 +16,6 @@ const userSchema = mongoose.Schema({
     email: {
         type: String, 
         require: false,
-        unique: true
     }, 
     mobile: {
         type: String, 
@@ -29,7 +28,6 @@ const userSchema = mongoose.Schema({
     otp: {
      type: String, 
      require: false, 
-     unique: true
     }, 
     referStatus: {
         type: String,
@@ -38,7 +36,6 @@ const userSchema = mongoose.Schema({
       },
       referCode : {
         type : String, 
-        unique: true
     },
   
 
