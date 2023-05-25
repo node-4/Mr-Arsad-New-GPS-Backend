@@ -1,73 +1,44 @@
-const express = require('express');
-const cors = require('cors');
-const serverless = require('serverless-http')
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-require('dotenv').config()
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const mongoose = require("mongoose");
+require("dotenv").config();
+const compression = require("compression");
+const serverless = require("serverless-http");
+const app = express();
+const path = require("path");
 const morgan = require('morgan');
 const createError = require('http-errors');
 const user = require('./router/user_router');
 const wallet = require('./router/wallet');
 const devices = require('./router/device_router')
-const app = express();
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
-app.use(morgan('dev'));
+app.use(compression({ threshold: 500 }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.get('/', (req,res) =>{
-    res.status(200).json({
-        message: "Working"
-    })
-})
+if (process.env.NODE_ENV == "production") {
+    console.log = function () { };
+}
+//console.log = function () {};
+app.get("/", (req, res) => {
+    res.send("Hello World!");
+});
 app.use('/api/v1/user',user );
 app.use('/api/v1/wallet', wallet);
 app.use('/api/v1/device', devices)
-app.all('*', (req, res, next) => {
-    return next(
-        createError(404, 'Path does not exists'));
-})
-app.use((err, req, res, next) => {
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-    // render the error page
-    res.status(err.status || 500);
-    if (err.status) {
-        console.log(err);
-        console.log('error middleware');
-        return res.status(err.status).json({
-            msg: err.message
-        })
+mongoose.Promise = global.Promise;
+mongoose.set("strictQuery", true);
 
+mongoose.connect("mongodb+srv://gpstracker:gpstracker@gps.l8lbcy8.mongodb.net/?retryWrites=true&w=majority", (err) => {
+    if (!err) {
+        console.log("MongoDB Connection Succeeded.");
     } else {
-
-        console.log(err);
-        console.log('error middleware status not given');
-        return res.status(500).json({
-            msg: err.message
-        })
+        console.log("Error in DB connection: " + err);
     }
+});
 
-})
+app.listen(process.env.PORT || 3000, () => {
+    console.log(`Listening on port ${process.env.PORT}!`);
+});
 
-
-
-
-
-mongoose.connection.on('connected', () => console.log('connected'));
-mongoose.connection.on('disconnected', () => console.log('disconnected'));
-mongoose.connection.on('error', (error) => console.log(error));
-mongoose.set('strictQuery', false);
-
-app.listen(process.env.PORT || 3000, async () => {
-    await mongoose.connect(process.env.DATABASE || "mongodb+srv://gpstracker:gpstracker@gps.l8lbcy8.mongodb.net/?retryWrites=true&w=majority", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-    console.log(`listening on port ${process.env.PORT || 3000}`);})
-
-
-
-
-    module.exports = {
-        handler: serverless(app)
-    }
+module.exports = { handler: serverless(app) }
