@@ -1,0 +1,10 @@
+const express = require('express');
+const help = require('../controllers/helpAndSupport');
+const authJwt = require("../middleware/auth");
+const adminAuth = require("../middleware/adminAuth");
+const router = express.Router();
+router.post("/createQuery", authJwt.isAuthenticatedUser, help.AddQuery);
+router.get("/", help.getAllHelpandSupport);
+router.get("/:id", help.getAllHelpandSupportgetById);
+router.delete("/delete/:id", adminAuth.verifyToken, help.DeleteHelpandSupport);
+module.exports = router;

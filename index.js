@@ -6,12 +6,6 @@ require("dotenv").config();
 const compression = require("compression");
 const serverless = require("serverless-http");
 const app = express();
-const path = require("path");
-const morgan = require('morgan');
-const createError = require('http-errors');
-const user = require('./router/user_router');
-const wallet = require('./router/wallet');
-const devices = require('./router/device_router')
 app.use(compression({ threshold: 500 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,13 +13,25 @@ app.use(cors());
 if (process.env.NODE_ENV == "production") {
     console.log = function () { };
 }
-//console.log = function () {};
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
-app.use('/api/v1/user',user );
+const user = require('./router/user_router');
+const wallet = require('./router/wallet');
+const devices = require('./router/device_router')
+const adminRoutes = require('./router/adminRoutes')
+const static = require('./router/static.route')
+const subscription = require('./router/subscription');
+const rideType = require('./router/rideType')
+app.use('/api/v1/user', user);
 app.use('/api/v1/wallet', wallet);
 app.use('/api/v1/device', devices)
+app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/static', static);
+app.use('/api/v1/subscription', subscription);
+app.use('/api/v1/rideType', rideType);
+app.use("/api/v1/Faq", require('./router/faq'))
+app.use("/api/v1/help", require('./router/helpAndSupport'))
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", true);
 

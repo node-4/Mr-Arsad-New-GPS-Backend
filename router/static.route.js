@@ -1,0 +1,20 @@
+const staticContent = require('../controllers/static.Controller');
+const auth = require('../middleware/adminAuth')
+const express = require('express');
+const router = express.Router();
+router.post('/createAboutus', auth.verifyToken, staticContent.createAboutUs);
+router.put('/aboutUs/:id', auth.verifyToken, staticContent.updateAboutUs);
+router.delete('/aboutUs/:id', auth.verifyToken, staticContent.deleteAboutUs);
+router.get('/getAboutUs', staticContent.getAboutUs);
+router.get('/aboutUs/:id', staticContent.getAboutUsById);
+router.post('/createPrivacy', auth.verifyToken, staticContent.createPrivacy);
+router.put('/privacy/:id', auth.verifyToken, staticContent.updatePrivacy);
+router.delete('/privacy/:id', auth.verifyToken, staticContent.deletePrivacy);
+router.get('/getPrivacy', staticContent.getPrivacy);
+router.get('/privacy/:id', staticContent.getPrivacybyId);
+router.post('/createTerms', auth.verifyToken, staticContent.createTerms);
+router.put('/terms/:id', auth.verifyToken, staticContent.updateTerms);
+router.delete('/terms/:id', auth.verifyToken, staticContent.deleteTerms);
+router.get('/getTerms', staticContent.getTerms);
+router.get('/terms/:id', staticContent.getTermsbyId);
+module.exports = router;
