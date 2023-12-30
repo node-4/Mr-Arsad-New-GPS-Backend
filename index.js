@@ -35,7 +35,7 @@ app.use("/api/v1/help", require('./router/helpAndSupport'))
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", true);
 
-mongoose.connect("mongodb+srv://gpstracker:gpstracker@gps.l8lbcy8.mongodb.net/?retryWrites=true&w=majority", (err) => {
+mongoose.connect("mongodb+srv://musicapp:flyweisnode5@cluster0.pw96pvt.mongodb.net/gpstracker?retryWrites=true&w=majority", (err) => {
     if (!err) {
         console.log("MongoDB Connection Succeeded.");
     } else {
